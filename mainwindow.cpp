@@ -4,6 +4,7 @@
 #include "vector"
 #include <QTimer>
 #include <QFile>
+#include <QValueAxis>
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
@@ -30,23 +31,31 @@ MainWindow::MainWindow(QWidget *parent)
 
     int temp = data.split(" ")[0].toInt();
 
-    values.push_back(temp / 1000);
-    series->append(0, values[0]);
+
+    //series->append(0, values[9]);
+
+
+    for (int i = 0; i < 10; i++) {
+        values.push_back(temp / 1000);
+        series->append(i, values[i]);
+    }
 
     //----
-    
+
+    QValueAxis* axisY = new QValueAxis;
+
     QChart* chart = new QChart();
     chart->addSeries(series);
-    chart->createDefaultAxes();
+    chart->setAxisY(axisY,series);
     chart->setTitle("Chungus");
     chart->axes(Qt::Vertical).first()->setRange(0,100);
 
-    
+
     QChartView* view = new QChartView(chart);
-    
+
     view->setRenderHint(QPainter::Antialiasing);
     view->setParent(ui->horizontalFrame);
-    //view->resize(640,480);
+    view->resize(840,480);
 
 
     // Timer to update every 60 seconds (for testing, set 1000ms)
@@ -73,6 +82,7 @@ void MainWindow::updateChart()
     int temp = data.split(" ")[0].toInt();
 
     values.push_back(temp / 1000);
+    qCritical()<< temp / 1000;
 
     series->clear();
     for (int i = 0; i < (int)values.size(); i++) {
